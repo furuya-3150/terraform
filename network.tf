@@ -59,7 +59,7 @@ resource "aws_subnet" "private_subnet-1a" {
 
 resource "aws_subnet" "private_subnet-1c" {
   vpc_id                  = aws_vpc.vpc.id
-  availability_zone       = "ap-northeast-1a"
+  availability_zone       = "ap-northeast-1c"
   cidr_block              = "192.168.4.0/24"
   map_public_ip_on_launch = false
 
