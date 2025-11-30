@@ -70,3 +70,45 @@ resource "aws_subnet" "private_subnet-1c" {
     type    = "private"
   }
 }
+
+resource "aws_route_table" "public_rt" {
+  vpc_id = aws_vpc.vpc.id
+
+  tags = {
+    Name    = "${var.project}-${var.environment}-public-rt"
+    project = var.project
+    Env     = var.environment
+    type    = "public"
+  }
+}
+
+resource "aws_route_table_association" "public-1a" {
+  route_table_id = aws_route_table.public_rt.id
+  subnet_id      = aws_subnet.public_subnet-1a.id
+}
+
+resource "aws_route_table_association" "public-1c" {
+  route_table_id = aws_route_table.public_rt.id
+  subnet_id      = aws_subnet.public_subnet-1c.id
+}
+
+resource "aws_route_table" "private_rt" {
+  vpc_id = aws_vpc.vpc.id
+
+  tags = {
+    Name    = "${var.project}-${var.environment}-private_rt"
+    project = var.project
+    Env     = var.environment
+    type    = "private"
+  }
+}
+
+resource "aws_route_table_association" "private-1a" {
+  route_table_id = aws_route_table.private_rt.id
+  subnet_id      = aws_subnet.private_subnet-1a.id
+}
+
+resource "aws_route_table_association" "private-1c" {
+  route_table_id = aws_route_table.private_rt.id
+  subnet_id      = aws_subnet.private_subnet-1c.id
+}
