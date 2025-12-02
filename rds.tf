@@ -12,7 +12,6 @@ resource "aws_db_parameter_group" "mysql_standalone_parametergroup" {
     value = "utf8mb4"
   }
 }
-
 # option group
 resource "aws_db_option_group" "mysql_standalone_optiongroup" {
   name                 = "${var.project}-${var.environment}-mysql-standalone-optiongroup"
