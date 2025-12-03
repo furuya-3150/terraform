@@ -54,6 +54,7 @@ resource "aws_instance" "app_server" {
     aws_security_group.app-sg.id,
     aws_security_group.opmng-sg.id,
   ]
+  key_name = aws_key_pair.keypair.key_name
 
   tags = {
     Name    = "${var.project}-${var.environment}-keypair"
