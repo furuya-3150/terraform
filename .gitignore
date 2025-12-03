@@ -41,3 +41,5 @@ terraform.rc
 
 *.pem
 *.pub
+
+*.DS_STORE
