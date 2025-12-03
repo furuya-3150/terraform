@@ -1,4 +1,9 @@
 # iam
+resource "aws_iam_instance_profile" "app" {
+  name = aws_iam_role.app_iam_role.name
+  role = aws_iam_role.app_iam_role.name
+}
+
 resource "aws_iam_role" "app_iam_role" {
   name               = "${var.project}-${var.environment}-app-iam-role"
   assume_role_policy = data.aws_iam_policy_document.ec2_assume_role.json
@@ -16,21 +21,21 @@ data "aws_iam_policy_document" "ec2_assume_role" {
 }
 
 resource "aws_iam_role_policy_attachment" "ec2-readonly" {
-  role = aws_iam_role.app_iam_role.name
+  role       = aws_iam_role.app_iam_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ReadOnlyAccess"
 }
 
 resource "aws_iam_role_policy_attachment" "ssm-managed" {
-  role = aws_iam_role.app_iam_role.name
+  role       = aws_iam_role.app_iam_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
 resource "aws_iam_role_policy_attachment" "s3-readonly" {
-  role = aws_iam_role.app_iam_role.name
+  role       = aws_iam_role.app_iam_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
 }
 
 resource "aws_iam_role_policy_attachment" "ssm-readonly" {
-  role = aws_iam_role.app_iam_role.name
+  role       = aws_iam_role.app_iam_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMReadOnlyAccess"
 }
