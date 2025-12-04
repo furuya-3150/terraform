@@ -22,6 +22,19 @@ resource "aws_lb_listener" "alb_http" {
   }
 }
 
+resource "aws_lb_listener" "alb_https" {
+  load_balancer_arn = aws_lb.alb.arn
+  port              = 443
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  certificate_arn   = aws_acm_certificate.tokyo_region.arn
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_alb_target_group.alb-tg.arn
+  }
+}
+
 # tg
 resource "aws_alb_target_group" "alb-tg" {
   name     = "${var.project}-${var.environment}-app-alb"
