@@ -9,3 +9,22 @@ resource "aws_lb" "alb" {
     aws_subnet.public_subnet-1c.id
   ]
 }
+
+# tg
+resource "aws_alb_target_group" "alb-tg" {
+  name     = "${var.project}-${var.environment}-app-alb"
+  port     = 3000
+  protocol = "HTTP"
+  vpc_id   = aws_vpc.vpc.id
+
+  tags = {
+    Name    = "${var.project}-${var.environment}-app-alb"
+    project = var.project
+    Env     = var.environment
+  }
+}
+
+resource "aws_alb_target_group_attachment" "app" {
+  target_group_arn = aws_alb_target_group.alb-tg.arn
+  target_id        = aws_instance.app_server.id
+}
