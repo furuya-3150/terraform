@@ -43,23 +43,56 @@ resource "aws_ssm_parameter" "password" {
 }
 
 # instance 
-resource "aws_instance" "app_server" {
-  ami                         = data.aws_ami.app.id
-  instance_type               = "t3.micro"
-  subnet_id                   = aws_subnet.public_subnet-1a.id
-  associate_public_ip_address = true
-  iam_instance_profile        = aws_iam_instance_profile.app.name
+# resource "aws_instance" "app_server" {
+#   ami                         = data.aws_ami.app.id
+#   instance_type               = "t3.micro"
+#   subnet_id                   = aws_subnet.public_subnet-1a.id
+#   associate_public_ip_address = true
+#   iam_instance_profile        = aws_iam_instance_profile.app.name
 
-  vpc_security_group_ids = [
-    aws_security_group.app-sg.id,
-    aws_security_group.opmng-sg.id,
-  ]
-  key_name = aws_key_pair.keypair.key_name
+#   vpc_security_group_ids = [
+#     aws_security_group.app-sg.id,
+#     aws_security_group.opmng-sg.id,
+#   ]
+#   key_name = aws_key_pair.keypair.key_name
 
-  tags = {
-    Name    = "${var.project}-${var.environment}-keypair"
-    project = var.project
-    Env     = var.environment
-    Type    = "app"
+#   tags = {
+#     Name    = "${var.project}-${var.environment}-keypair"
+#     project = var.project
+#     Env     = var.environment
+#     Type    = "app"
+#   }
+# }
+
+# launch template
+resource "aws_launch_template" "app_lt" {
+  update_default_version = true
+  name                   = "${var.project}-${var.environment}-app-lt"
+  image_id               = data.aws_ami.app.id
+  key_name               = aws_key_pair.keypair.key_name
+
+  tag_specifications {
+    resource_type = "instance"
+    tags = {
+      Name    = "${var.project}-${var.environment}-app-ec2"
+      Project = var.project
+      Env     = var.environment
+      Type    = "app"
+    }
+  }
+
+  network_interfaces {
+    associate_public_ip_address = true
+    security_groups = [
+      aws_security_group.app-sg.id,
+      aws_security_group.opmng-sg.id
+    ]
+    delete_on_termination = true
+  }
+
+  user_data = filebase64("./src/initialize.sh")
+
+  iam_instance_profile {
+    name = aws_iam_instance_profile.app.name
   }
 }
